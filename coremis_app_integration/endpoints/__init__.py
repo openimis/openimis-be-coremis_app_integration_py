@@ -1,1 +1,2 @@
 from coremis_app_integration.endpoints.login import login
+from coremis_app_integration.endpoints.change_password import change_password
