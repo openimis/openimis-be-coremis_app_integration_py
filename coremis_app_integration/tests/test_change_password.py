@@ -34,7 +34,7 @@ TEST_CHANGE_PASSWORD_BAD_CONFIRM_PASSWORD = {
 
 
 class ChangePasswordTests(APITestCase, LogInMixin):
-    base_url = 'api/mobile/v1/user/password/change'
+    base_url = '/api/coremis_app_integration/api/mobile/v1/user/password/change'
     _test_request_data = None
     _test_request_data_bad_old_password = None
     _test_request_data_bad_confirm_password = None
