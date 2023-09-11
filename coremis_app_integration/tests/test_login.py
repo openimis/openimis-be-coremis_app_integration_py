@@ -1,31 +1,37 @@
-import json
-import os
-
 from rest_framework import status
 from rest_framework.test import APITestCase
 
 from coremis_app_integration.tests.login_mixin import LogInMixin
 
 
+TEST_LOGIN = {
+  "username": "TestUserTest2",
+  "password": "TestPasswordTest2"
+}
+
+TEST_LOGIN_BAD_CREDENTIALS = {
+  "username": "TestUserxxxxxxTest2",
+  "password": "TestPassxxxxxxwordTest2"
+}
+
+
+TEST_LOGIN_BAD_PAYLOAD = {
+  "username2": "TestUserTest2",
+  "password": "TestPasswordTest2"
+}
+
+
 class LoginTests(APITestCase, LogInMixin):
     base_url = '/api/coremis_app_integration/api/mobile/v1/user/login'
-    _test_json_path = "/data/test_login.json"
-    _test_json_path_wrong_credentials = "/tests/data/test_login_bad_credentials.json"
-    _test_json_path_wrong_payload = "/tests/data/test_login_bad_payload.json"
     _test_request_data = None
     _test_request_data_wrong_credentials = None
     _test_request_data_bad_payload = None
 
     def setUp(self):
         super(LoginTests, self).setUp()
-        dir_path = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
-        json_representation = open(dir_path + self._test_json_path).read()
-        self._test_request_data = json.loads(json_representation)
-        dir_path = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
-        json_representation = open(dir_path + self._test_json_path_wrong_credentials).read()
-        self._test_request_data_wrong_credentials = json.loads(json_representation)
-        json_representation = open(dir_path + self._test_json_path_wrong_payload).read()
-        self._test_request_data_bad_payload = json.loads(json_representation)
+        self._test_request_data = TEST_LOGIN
+        self._test_request_data_wrong_credentials = TEST_LOGIN_BAD_CREDENTIALS
+        self._test_request_data_bad_payload = TEST_LOGIN_BAD_PAYLOAD
 
     def get_bundle_from_json_response(self, response):
         pass
