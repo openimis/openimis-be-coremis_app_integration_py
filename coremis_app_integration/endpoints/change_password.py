@@ -36,11 +36,11 @@ def change_password(request):
         else:
             response = FAILED
             response['result'] = _('The new password does not match the confirmation of new one')
-            return Response(response, status=status.HTTP_401_UNAUTHORIZED)
+            return Response(response, status=status.HTTP_400_BAD_REQUEST)
     else:
         response = FAILED
         response['result'] = _('Please provide correct old password')
-        return Response(response, status=status.HTTP_401_UNAUTHORIZED)
+        return Response(response, status=status.HTTP_400_BAD_REQUEST)
 
 
 def _build_success_output(user):
