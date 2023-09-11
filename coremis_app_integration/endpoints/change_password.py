@@ -44,4 +44,5 @@ def change_password(request):
 
 
 def _build_success_output(user):
+    # TODO implement 'success' output once WordlBank team provide better specification for it
     pass
