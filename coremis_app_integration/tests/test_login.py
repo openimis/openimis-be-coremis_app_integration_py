@@ -9,7 +9,7 @@ from coremis_app_integration.tests.login_mixin import LogInMixin
 
 class LoginTests(APITestCase, LogInMixin):
     base_url = '/api/coremis_app_integration/api/mobile/v1/user/login'
-    _test_json_path = "/tests/data/test_login.json"
+    _test_json_path = "/data/test_login.json"
     _test_json_path_wrong_credentials = "/tests/data/test_login_bad_credentials.json"
     _test_json_path_wrong_payload = "/tests/data/test_login_bad_payload.json"
     _test_request_data = None
