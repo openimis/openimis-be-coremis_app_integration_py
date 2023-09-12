@@ -11,7 +11,7 @@ from payroll.models import PaymentPoint
 
 class LogInMixin:
     _TEST_USER_NAME = "TestUserTest2"
-    _TEST_USER_PASSWORD = "TestPasswordTest2"
+    _TEST_USER_PASSWORD = "TestPasswordTest2%"
     _TEST_DATA_USER = {
         "username": _TEST_USER_NAME,
         "last_name": _TEST_USER_NAME,
