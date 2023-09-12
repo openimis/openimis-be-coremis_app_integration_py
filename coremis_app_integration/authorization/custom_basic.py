@@ -21,7 +21,7 @@ class CustomBasicAuthentication(BasicAuthentication):
     """
     HTTP Basic authentication against username/password.
     """
-    def _authenticate(self, request):
+    def authenticate(self, request):
         """
         Returns a `User` if a correct username and password have been supplied
         using HTTP Basic authentication.  Otherwise returns `None`.
