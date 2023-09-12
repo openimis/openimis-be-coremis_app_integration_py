@@ -36,8 +36,15 @@ def change_password(request):
         response = FAILED
         response['result'] = _('Please provide correct old password')
         return Response(response, status=status.HTTP_400_BAD_REQUEST)
-    user.set_password(new_password)
-    user.save()
+
+    try:
+        user.set_password(new_password)
+        user.save()
+    except Exception as exc:
+        response = FAILED
+        response['result'] = exc
+        return Response(response, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
     response_data = SUCCESS
     response_data["result"] = {}
     return Response(response_data, status=status.HTTP_200_OK)
