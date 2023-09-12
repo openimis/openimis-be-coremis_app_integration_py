@@ -21,14 +21,14 @@ class CustomBasicAuthentication(BasicAuthentication):
     """
     HTTP Basic authentication against username/password.
     """
-    def authenticate(self, request):
+    def _authenticate(self, request):
         """
         Returns a `User` if a correct username and password have been supplied
         using HTTP Basic authentication.  Otherwise returns `None`.
         """
         auth = get_authorization_header(request).split()
 
-        if not auth or auth[0].lower() != b'basic':
+        if not auth or not self.__is_basic_auth(auth):
             return None
 
         if len(auth) == 1:
@@ -53,6 +53,9 @@ class CustomBasicAuthentication(BasicAuthentication):
 
         userid, password = auth_parts[0], auth_parts[2]
         return self.authenticate_credentials(userid, password, request)
+
+    def __is_basic_auth(self, auth_header):
+        return auth_header.lower().startswith(b'basic')
 
     def authenticate_credentials(self, userid, password, request=None):
         """
