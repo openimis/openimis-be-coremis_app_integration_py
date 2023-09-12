@@ -24,23 +24,23 @@ def change_password(request):
     old_password = request.data.get('oldpassword', None)
     new_password = request.data.get('newpassword', None)
     confirm_password = request.data.get('confirmpassword', None)
+    if new_password != confirm_password:
+        response = FAILED
+        response['result'] = _('The new password does not match the confirmation of new one')
+        return Response(response, status=status.HTTP_400_BAD_REQUEST)
+
     user = request.user
     authenticated_user = authenticate(username=user.username, password=old_password)
-    if authenticated_user:
-        if new_password == confirm_password:
-            user.set_password(new_password)
-            user.save()
-            response_data = SUCCESS
-            response_data["result"] = {}
-            return Response(response_data, status=status.HTTP_200_OK)
-        else:
-            response = FAILED
-            response['result'] = _('The new password does not match the confirmation of new one')
-            return Response(response, status=status.HTTP_400_BAD_REQUEST)
-    else:
+
+    if not authenticated_user:
         response = FAILED
         response['result'] = _('Please provide correct old password')
         return Response(response, status=status.HTTP_400_BAD_REQUEST)
+    user.set_password(new_password)
+    user.save()
+    response_data = SUCCESS
+    response_data["result"] = {}
+    return Response(response_data, status=status.HTTP_200_OK)
 
 
 def _build_success_output(user):
