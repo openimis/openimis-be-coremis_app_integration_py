@@ -1,0 +1,3 @@
+from coremis_app_integration.dataclasses.user_details import UserDetails
+from coremis_app_integration.dataclasses.success_response import SuccessResponse
+from coremis_app_integration.dataclasses.failed_response import FailedResponse
