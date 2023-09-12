@@ -1,3 +1,5 @@
+import re
+
 from django.utils.translation import gettext_lazy as _
 from rest_framework.authentication import authenticate
 from rest_framework.decorators import (
@@ -17,6 +19,9 @@ from coremis_app_integration.authorization import (
 )
 
 
+REGEX_PATTERN = r'^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&!+=])(?=\S+$).{8,}$'
+
+
 @api_view(['POST'])
 @authentication_classes([CustomBasicAuthentication])
 @permission_classes([IsAuthenticated])
@@ -27,6 +32,11 @@ def change_password(request):
     if new_password != confirm_password:
         response = FAILED
         response['result'] = _('The new password does not match the confirmation of new one')
+        return Response(response, status=status.HTTP_400_BAD_REQUEST)
+
+    if not re.match(REGEX_PATTERN, new_password):
+        response = FAILED
+        response['result'] = _('The new password does not match the required pattern')
         return Response(response, status=status.HTTP_400_BAD_REQUEST)
 
     user = request.user
