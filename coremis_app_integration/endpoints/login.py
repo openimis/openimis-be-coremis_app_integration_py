@@ -1,3 +1,4 @@
+from dataclasses import asdict
 from django.utils.translation import gettext_lazy as _
 from rest_framework.authentication import authenticate
 from rest_framework.decorators import (
@@ -9,11 +10,11 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework import status
 
-from coremis_app_integration.authorization import (
-    CustomBasicAuthentication,
-    DETAILS,
-    FAILED,
-    SUCCESS
+from coremis_app_integration.authorization import CustomBasicAuthentication
+from coremis_app_integration.dataclasses import (
+    FailedResponse,
+    SuccessResponse,
+    UserDetails
 )
 from payroll.models import PaymentPoint
 
@@ -28,26 +29,26 @@ def login(request):
     authenticated_user = authenticate(username=username, password=password)
 
     if not authenticated_user:
-        response = FAILED
+        response = FailedResponse()
         response.result = _(
             'Wrong request authentication data. '
             'Please correct username or password'
         )
-        return Response(response, status=status.HTTP_401_UNAUTHORIZED)
+        return Response(asdict(response), status=status.HTTP_401_UNAUTHORIZED)
 
     payment_points = PaymentPoint.objects.filter(ppm__username=username)
     if payment_points.count() > 0:
-        response_data = SUCCESS
-        response_data["result"] = _build_success_output(authenticated_user)
-        return Response(response_data, status=status.HTTP_200_OK)
+        response_data = SuccessResponse()
+        response_data.result = _build_success_output(authenticated_user)
+        return Response(asdict(response_data), status=status.HTTP_200_OK)
     else:
-        response = FAILED
+        response = FailedResponse()
         response.result = _('Payment Point Manager not assigned to any PaymentPoints')
-        return Response(response, status=status.HTTP_401_UNAUTHORIZED)
+        return Response(asdict(response), status=status.HTTP_401_UNAUTHORIZED)
 
 
 def _build_success_output(user):
-    response_success_details = DETAILS
+    response_success_details = UserDetails()
     response_success_details.id = user.id
     response_success_details.username = user.username
     response_success_details.fullname = user.username

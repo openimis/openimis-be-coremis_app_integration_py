@@ -4,6 +4,7 @@ Provides various authentication policies.
 import base64
 import binascii
 
+from dataclasses import asdict
 from django.contrib.auth import get_user_model
 from django.utils.translation import gettext_lazy as _
 from rest_framework.authentication import (
@@ -13,16 +14,7 @@ from rest_framework.authentication import (
 )
 
 from rest_framework import exceptions
-from coremis_app_integration.dataclasses import (
-    UserDetails,
-    FailedResponse,
-    SuccessResponse
-)
-
-
-FAILED = FailedResponse()
-DETAILS = UserDetails()
-SUCCESS = SuccessResponse()
+from coremis_app_integration.dataclasses import FailedResponse
 
 
 class CustomBasicAuthentication(BasicAuthentication):
@@ -40,13 +32,13 @@ class CustomBasicAuthentication(BasicAuthentication):
             return None
 
         if len(auth) == 1:
-            response = FAILED
-            response['result'] = _('Invalid basic header. No credentials provided.')
-            raise exceptions.AuthenticationFailed(response)
+            response = FailedResponse()
+            response.result = _('Invalid basic header. No credentials provided.')
+            raise exceptions.AuthenticationFailed(asdict(response))
         elif len(auth) > 2:
-            response = FAILED
+            response = FailedResponse()
             response.result = _('Invalid basic header. Credentials string should not contain spaces.')
-            raise exceptions.AuthenticationFailed(response)
+            raise exceptions.AuthenticationFailed(asdict(response))
 
         try:
             try:
@@ -55,9 +47,9 @@ class CustomBasicAuthentication(BasicAuthentication):
                 auth_decoded = base64.b64decode(auth[1]).decode('latin-1')
             auth_parts = auth_decoded.partition(':')
         except (TypeError, UnicodeDecodeError, binascii.Error):
-            response = FAILED
+            response = FailedResponse()
             response.result = _('Invalid basic header. Credentials not correctly base64 encoded.')
-            raise exceptions.AuthenticationFailed(response)
+            raise exceptions.AuthenticationFailed(asdict(response))
 
         userid, password = auth_parts[0], auth_parts[2]
         return self.authenticate_credentials(userid, password, request)
@@ -74,13 +66,13 @@ class CustomBasicAuthentication(BasicAuthentication):
         user = authenticate(request=request, **credentials)
 
         if user is None:
-            response = FAILED
+            response = FailedResponse()
             response.result = _('Invalid username/password.')
-            raise exceptions.AuthenticationFailed(response)
+            raise exceptions.AuthenticationFailed(asdict(response))
 
         if not user.is_active:
-            response = FAILED
+            response = FailedResponse()
             response.result = _('User inactive or deleted.')
-            raise exceptions.AuthenticationFailed(response)
+            raise exceptions.AuthenticationFailed(asdict(response))
 
         return user, None
