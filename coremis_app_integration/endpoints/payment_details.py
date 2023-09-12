@@ -1,3 +1,4 @@
+from dataclasses import asdict
 from django.db.models import Q, Sum
 from django.utils.translation import gettext_lazy as _
 from rest_framework.decorators import (
@@ -9,10 +10,11 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework import status
 
-from coremis_app_integration.authorization import (
-    CustomBasicAuthentication,
-    FAILED,
-    SUCCESS
+from coremis_app_integration.authorization import CustomBasicAuthentication
+from coremis_app_integration.dataclasses import (
+    SuccessResponse,
+    FailedResponse,
+    PayrollResponse,
 )
 from invoice.models import Bill
 from payroll.models import (
@@ -42,25 +44,18 @@ def payment_details(request):
         for payroll in payrolls:
             total_amount = _get_payroll_bills_amount(payroll)
             response_details[f'{payroll.name}'] = _build_success_output(total_amount)
-        response_data = SUCCESS
-        response_data["result"] = response_details
-        return Response(response_data, status=status.HTTP_200_OK)
+        response_data = SuccessResponse()
+        response_data.result = response_details
+        return Response(asdict(response_data), status=status.HTTP_200_OK)
     else:
-        response = FAILED
-        response['result'] = _('Please provide PPM channel')
-        return Response(response, status=status.HTTP_400_BAD_REQUEST)
+        response = FailedResponse()
+        response.result = _('Please provide PPM channel')
+        return Response(asdict(response), status=status.HTTP_400_BAD_REQUEST)
 
 
 def _build_success_output(total_amount):
-    response_payrolls = {
-        'TOTAL_AMOUNT_PAID': 0.0,
-        'TOTAL_AMOUNT_PAID_TO_PPM_BY_USER_EMAIL': None,
-        'IS_RECONCILED': False,
-        'TOTAL_AMOUNT_PAID_TO_PPM': None,
-        'TOTAL_AMOUNT_PAID_TO_PPM_BY_USER': None,
-        'TOTAL_AMOUNT': total_amount,
-        'TOTAL_BENEFICIARY_PAID': 0
-    }
+    response_payrolls = PayrollResponse()
+    response_payrolls.TOTAL_AMOUNT = total_amount
     return response_payrolls
 
 
