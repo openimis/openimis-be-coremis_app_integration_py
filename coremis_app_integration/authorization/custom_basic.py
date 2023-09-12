@@ -13,41 +13,16 @@ from rest_framework.authentication import (
 )
 
 from rest_framework import exceptions
+from coremis_app_integration.dataclasses import (
+    UserDetails,
+    FailedResponse,
+    SuccessResponse
+)
 
 
-FAILED = {
-  "status": False,
-  "count": 1,
-  "result": "",
-  "message": "ERROR",
-}
-
-
-DETAILS = {
-  "id": None,
-  "username": None,
-  "fullname": None,
-  "phone": None,
-  "email": None,
-  "firstRunDate": None,
-  "institutionName": None,
-  "loginCount": None,
-  "lastLogin": None,
-  "lastActivityDate": None,
-  "lastSyncData": None,
-  "deviceId": None,
-  "requiresPasswordReset": None,
-  "active": None,
-  "dateCreated": None,
-}
-
-
-SUCCESS = {
-  "status": True,
-  "count": 1,
-  "result": DETAILS,
-  "message": "SUCCESS"
-}
+FAILED = FailedResponse()
+DETAILS = UserDetails()
+SUCCESS = SuccessResponse()
 
 
 class CustomBasicAuthentication(BasicAuthentication):
@@ -70,7 +45,7 @@ class CustomBasicAuthentication(BasicAuthentication):
             raise exceptions.AuthenticationFailed(response)
         elif len(auth) > 2:
             response = FAILED
-            response['result'] = _('Invalid basic header. Credentials string should not contain spaces.')
+            response.result = _('Invalid basic header. Credentials string should not contain spaces.')
             raise exceptions.AuthenticationFailed(response)
 
         try:
@@ -81,7 +56,7 @@ class CustomBasicAuthentication(BasicAuthentication):
             auth_parts = auth_decoded.partition(':')
         except (TypeError, UnicodeDecodeError, binascii.Error):
             response = FAILED
-            response['result'] = _('Invalid basic header. Credentials not correctly base64 encoded.')
+            response.result = _('Invalid basic header. Credentials not correctly base64 encoded.')
             raise exceptions.AuthenticationFailed(response)
 
         userid, password = auth_parts[0], auth_parts[2]
@@ -100,12 +75,12 @@ class CustomBasicAuthentication(BasicAuthentication):
 
         if user is None:
             response = FAILED
-            response['result'] = _('Invalid username/password.')
+            response.result = _('Invalid username/password.')
             raise exceptions.AuthenticationFailed(response)
 
         if not user.is_active:
             response = FAILED
-            response['result'] = _('User inactive or deleted.')
+            response.result = _('User inactive or deleted.')
             raise exceptions.AuthenticationFailed(response)
 
         return user, None
