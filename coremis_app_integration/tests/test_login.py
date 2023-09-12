@@ -7,19 +7,19 @@ from coremis_app_integration.tests.login_mixin import LogInMixin
 
 
 TEST_LOGIN = {
-  "username": "TestUserTest2",
+  "username": "TestUserTest2%",
   "password": "TestPasswordTest2"
 }
 
 TEST_LOGIN_BAD_CREDENTIALS = {
   "username": "TestUserxxxxxxTest2",
-  "password": "TestPassxxxxxxwordTest2"
+  "password": "TestPassxxxxxxwordTest2%"
 }
 
 
 TEST_LOGIN_BAD_PAYLOAD = {
   "username2": "TestUserTest2",
-  "password": "TestPasswordTest2"
+  "password": "TestPasswordTest2%"
 }
 
 
