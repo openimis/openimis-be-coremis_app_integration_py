@@ -8,14 +8,14 @@ from coremis_app_integration.tests.login_mixin import LogInMixin
 
 TEST_LOGIN = {
   "username": "TestUserTest2",
-  "password": "TestPasswordTest2"
+  "password": "TestPasswordTest2%"
 }
 
 
 TEST_CHANGE_PASSWORD = {
-  "oldpassword": "TestPasswordTest2",
-  "newpassword": "TestPasswordTest23",
-  "confirmpassword": "TestPasswordTest23"
+  "oldpassword": "TestPasswordTest2%",
+  "newpassword": "TestPasswordTest23%",
+  "confirmpassword": "TestPasswordTest23%"
 }
 
 
