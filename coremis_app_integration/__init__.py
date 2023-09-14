@@ -1,0 +1,1 @@
+default_app_config = 'coremis_app_integration.apps.CoremisAppIntegrationConfig'
