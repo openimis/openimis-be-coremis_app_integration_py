@@ -18,6 +18,15 @@ from coremis_app_integration.dataclasses import (
     SuccessResponse
 )
 
+"""
+In summary, the regex enforces a string (likely a password) to:
+    Be at least 8 characters long
+    Contain at least one digit
+    Contain at least one lowercase letter
+    Contain at least one uppercase letter
+    Contain at least one special character from the set @#$%^&!+=
+    Not contain any whitespace characters
+"""
 
 REGEX_PATTERN = r'^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&!+=])(?=\S+$).{8,}$'
 
